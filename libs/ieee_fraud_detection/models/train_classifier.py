@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import sys
 import os
 
@@ -11,7 +12,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from imblearn.under_sampling import RandomUnderSampler
 
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.preprocessing import FunctionTransformer
+from sklearn.preprocessing import FunctionTransformer, LabelEncoder
 
 from sklearn.naive_bayes import GaussianNB
 
@@ -105,6 +106,19 @@ def col_TransactionAmt(X):
     return X[['TransactionAmt']]
 
 
+def col_ProductCD(X):
+    return X.ProductCD
+
+
+class ModifiedLabelEncoder(LabelEncoder):
+
+    def fit_transform(self, y, *args, **kwargs):
+        return super().fit_transform(y).reshape(-1, 1)
+
+    def transform(self, y, *args, **kwargs):
+        return super().transform(y).reshape(-1, 1)
+
+
 def build_model():
     """
     Initialize a model for running the data through
@@ -115,10 +129,15 @@ def build_model():
     pipe1 =  Pipeline([
         ('column_selection', FunctionTransformer(col_TransactionAmt, validate=False))
     ])
+    pipe2 =  Pipeline([
+        ('column_selection', FunctionTransformer(col_ProductCD, validate=False)),
+        ('label_encoder', ModifiedLabelEncoder())
+    ])
 
     pipe = Pipeline([
         ('union', FeatureUnion([
-            ('pi1', pipe1)
+            ('pi1', pipe1),
+            ('pi2', pipe2)
         ])),
         ('clf', GaussianNB())
     ])
@@ -198,7 +217,10 @@ def main(database_filepath='../data/train_transactions.db',
     # X, y = resample_data(X, y, cols=['TransactionAmt'])
     
     print('Importing data...')
-    X, y = import_data(database_filepath, ['TransactionAmt'])
+    X, y = import_data(
+        database_filepath, 
+        ['TransactionAmt', 'ProductCD']
+    )
 
     print('Creating train test split from data...')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
