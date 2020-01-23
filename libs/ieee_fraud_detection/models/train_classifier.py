@@ -12,9 +12,12 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from imblearn.under_sampling import RandomUnderSampler
 
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.preprocessing import FunctionTransformer, LabelEncoder
+from sklearn.preprocessing import FunctionTransformer, LabelEncoder, OneHotEncoder
+from sklearn.impute import SimpleImputer
 
 from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC
 
 from sklearn import metrics
 
@@ -102,12 +105,25 @@ def import_data(database_filepath, cols, resample=True, resample_suffix='_rs'):
 
         return X, y
 
+
 def col_TransactionAmt(X):
     return X[['TransactionAmt']]
 
 
+def col_card4(X):
+    return X[['card4']].fillna('NaN')
+
+
+def col_card6(X):
+    return X[['card6']].fillna('NaN')
+
+
+def col_P_emaildomain(X):
+    return X[['P_emaildomain']].fillna('NaN')
+
+
 def col_ProductCD(X):
-    return X.ProductCD
+    return X[['ProductCD']]
 
 
 class ModifiedLabelEncoder(LabelEncoder):
@@ -124,28 +140,45 @@ def build_model():
     Initialize a model for running the data through
     :return: a model
     """
+    
+    onehot = ('onehot_encoder', OneHotEncoder(categories='auto', sparse=False, handle_unknown='ignore'))
 
     # Set up the pipeline
-    pipe1 =  Pipeline([
+    pipe_TransactionAmt =  Pipeline([
         ('column_selection', FunctionTransformer(col_TransactionAmt, validate=False))
     ])
-    pipe2 =  Pipeline([
+    pipe_ProductCD =  Pipeline([
         ('column_selection', FunctionTransformer(col_ProductCD, validate=False)),
-        ('label_encoder', ModifiedLabelEncoder())
+        onehot
+    ])
+    pipe_card4 =  Pipeline([
+        ('column_selection', FunctionTransformer(col_card4, validate=False)),
+        onehot
+    ])
+    pipe_card6 =  Pipeline([
+        ('column_selection', FunctionTransformer(col_card6, validate=False)),
+        onehot
+    ])
+    pipe_P_emaildomain =  Pipeline([
+        ('column_selection', FunctionTransformer(col_P_emaildomain, validate=False)),
+        onehot
     ])
 
     pipe = Pipeline([
         ('union', FeatureUnion([
-            ('pi1', pipe1),
-            ('pi2', pipe2)
+            ('pipe_TransactionAmt', pipe_TransactionAmt),
+            ('pipe_ProductCD', pipe_ProductCD),
+            ('pipe_card4', pipe_card4),
+            ('pipe_card6', pipe_card6),
+            ('pipe_P_emaildomain', pipe_P_emaildomain)
         ])),
-        ('clf', GaussianNB())
+        ('clf', RandomForestClassifier())
     ])
 
     # Set up a parameter grid
     pg = [
         {
-            'clf': [GaussianNB()]
+            'clf': [RandomForestClassifier()]
         }
     ]
 
@@ -209,24 +242,15 @@ def main(database_filepath='../data/train_transactions.db',
     # Optional override with command line
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
-
-    # print('Loading data...\n    DATABASE: {}'.format(database_filepath))
-    # X, y = load_data(database_filepath)
-    # 
-    # print('Resampling data...')
-    # X, y = resample_data(X, y, cols=['TransactionAmt'])
     
     print('Importing data...')
     X, y = import_data(
         database_filepath, 
-        ['TransactionAmt', 'ProductCD']
+        ['TransactionAmt', 'ProductCD', 'card4']
     )
 
     print('Creating train test split from data...')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    
-    print(X_train.shape)
-    print(y_train.shape)
 
     print('Building model...')
     model = build_model()
