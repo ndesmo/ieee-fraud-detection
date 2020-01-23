@@ -21,6 +21,9 @@ from sklearn.svm import LinearSVC
 
 from sklearn import metrics
 
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import SimpleImputer, IterativeImputer
+
 from ieee_fraud_detection.data.process_data import save_data
 
 def load_data(database_filepath):
@@ -40,6 +43,20 @@ def load_data(database_filepath):
     X = df[df.columns[1:]]
     y = df.isFraud
 
+    return X, y
+
+
+def preprocess_data(X, y):
+    """
+    Extra preprocessing of data
+    :param X: Features dataset
+    :param y: Response dataset
+    :return: Further preprocessed dataset
+    """
+    
+    fillna_cols = ['card4', 'card6', 'P_emaildomain', 'R_emaildomain', 'M4', 'V2', 'V3']
+    X[fillna_cols] = X[fillna_cols].fillna('NaN')
+    
     return X, y
 
 
@@ -86,6 +103,7 @@ def import_data(database_filepath, cols, resample=True, resample_suffix='_rs'):
 
             # Load and resample
             X, y = load_data(database_filepath)
+            X, y = preprocess_data(X, y)
             X_rs, y_rs = resample_data(X, y, cols)
 
             # Combine
@@ -110,6 +128,26 @@ def col_TransactionAmt(X):
     return X[['TransactionAmt']]
 
 
+def col_V2(X):
+    return X[['V2']].fillna('NaN')
+
+
+def col_V2NaN(X):
+    return X[['V2']] == 'NaN'
+
+
+def col_V3(X):
+    return X[['V3']].fillna('NaN')
+
+
+def col_V3NaN(X):
+    return X[['V3']] == 'NaN'
+
+
+def col_ProductCD(X):
+    return X[['ProductCD']].fillna('NaN')
+
+
 def col_card4(X):
     return X[['card4']].fillna('NaN')
 
@@ -122,8 +160,12 @@ def col_P_emaildomain(X):
     return X[['P_emaildomain']].fillna('NaN')
 
 
-def col_ProductCD(X):
-    return X[['ProductCD']]
+def col_R_emaildomain(X):
+    return X[['R_emaildomain']].fillna('NaN')
+
+
+def col_M4(X):
+    return X[['M4']].fillna('NaN')
 
 
 class ModifiedLabelEncoder(LabelEncoder):
@@ -144,33 +186,66 @@ def build_model():
     onehot = ('onehot_encoder', OneHotEncoder(categories='auto', sparse=False, handle_unknown='ignore'))
 
     # Set up the pipeline
-    pipe_TransactionAmt =  Pipeline([
+
+    ## NUMERICALS
+    pipe_TransactionAmt = Pipeline([
         ('column_selection', FunctionTransformer(col_TransactionAmt, validate=False))
     ])
-    pipe_ProductCD =  Pipeline([
+    pipe_V2 = Pipeline([
+        ('column_selection', FunctionTransformer(col_V2, validate=False)),
+        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+    ])
+    pipe_V2NaN = Pipeline([
+        ('column_selection', FunctionTransformer(col_V2NaN, validate=False))
+    ])
+    pipe_V3 = Pipeline([
+        ('column_selection', FunctionTransformer(col_V3, validate=False)),
+        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+    ])
+    pipe_V3NaN = Pipeline([
+        ('column_selection', FunctionTransformer(col_V3NaN, validate=False))
+    ])
+    
+    
+    ## CATEGORICALS
+    pipe_ProductCD = Pipeline([
         ('column_selection', FunctionTransformer(col_ProductCD, validate=False)),
         onehot
     ])
-    pipe_card4 =  Pipeline([
+    pipe_card4 = Pipeline([
         ('column_selection', FunctionTransformer(col_card4, validate=False)),
         onehot
     ])
-    pipe_card6 =  Pipeline([
+    pipe_card6 = Pipeline([
         ('column_selection', FunctionTransformer(col_card6, validate=False)),
         onehot
     ])
-    pipe_P_emaildomain =  Pipeline([
+    pipe_P_emaildomain = Pipeline([
         ('column_selection', FunctionTransformer(col_P_emaildomain, validate=False)),
+        onehot
+    ])
+    pipe_R_emaildomain = Pipeline([
+        ('column_selection', FunctionTransformer(col_R_emaildomain, validate=False)),
+        onehot
+    ])
+    pipe_M4 = Pipeline([
+        ('column_selection', FunctionTransformer(col_M4, validate=False)),
         onehot
     ])
 
     pipe = Pipeline([
         ('union', FeatureUnion([
             ('pipe_TransactionAmt', pipe_TransactionAmt),
+            ('pipe_V2', pipe_V2),
+            ('pipe_V2NaN', pipe_V2NaN),
+            ('pipe_V3', pipe_V3),
+            ('pipe_V3NaN', pipe_V3NaN),
             ('pipe_ProductCD', pipe_ProductCD),
             ('pipe_card4', pipe_card4),
             ('pipe_card6', pipe_card6),
-            ('pipe_P_emaildomain', pipe_P_emaildomain)
+            ('pipe_P_emaildomain', pipe_P_emaildomain),
+            ('pipe_R_emaildomain', pipe_R_emaildomain),
+            ('pipe_M4', pipe_M4)
         ])),
         ('clf', RandomForestClassifier())
     ])
@@ -246,7 +321,7 @@ def main(database_filepath='../data/train_transactions.db',
     print('Importing data...')
     X, y = import_data(
         database_filepath, 
-        ['TransactionAmt', 'ProductCD', 'card4']
+        ['TransactionAmt', 'V2', 'V3', 'ProductCD', 'card4', 'card6', 'P_emaildomain', 'R_emaildomain', 'M4']
     )
 
     print('Creating train test split from data...')
