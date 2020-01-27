@@ -210,8 +210,8 @@ def col_M4(X):
 def col_DeviceType(X):
     return X[['DeviceType']].fillna('NaN')
 
-def col_DeviceInfo(X):
-    return X[['DeviceInfo']].fillna('NaN')
+def col_DevicePlatform(X):
+    return X[['DevicePlatform']]
 
 def col_id_12(X):
     return X[['id_12']].fillna('NaN')

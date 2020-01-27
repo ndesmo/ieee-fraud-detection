@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import re
 
 import pickle
 
@@ -50,6 +51,40 @@ def load_data(database_filepath):
     return X, y
 
 
+col_dict = {
+    'win': 'Windows',
+    'mac': 'Mac',
+    'samsung': 'Samsung',
+    'sm-': 'Samsung mobile',
+    'trident': 'Trident',
+    'huawei': 'Huawei',
+    'ios': 'iOS',
+    'lg': 'LG',
+    'moto': 'Moto',
+    'rv': 'rv',
+    'redmi': 'Redmi',
+    'htc': 'HTC',
+    'gt-': 'GT',
+    'hisense': 'Hisense',
+    'blade': 'Blade',
+    'alcatel': 'Alcatel',
+    'linux': 'Linux',
+    'nexus': 'Nexus',
+    'asus': 'Asus'
+}
+
+
+def regex_replace(col_dict, text):
+    regex = re.compile("(%s)" % "|".join(
+        map(re.escape, col_dict.keys())
+    ), re.IGNORECASE)
+    if regex.search(text):
+        ret = regex.search(text)
+        return col_dict[ret.group().lower()]
+    else:
+        return 'Other'
+
+
 def preprocess_data(X, y):
     """
     Extra preprocessing of data
@@ -70,6 +105,8 @@ def preprocess_data(X, y):
     X['dayofmonth'] = np.floor(np.mod(X['days'] - np.floor(X['months'] * 365 / 12), 365 / 12))
     
     X['hourofday'] = np.mod(X['hours'] - X['days'] * 24, 24)
+
+    X['DevicePlatform'] = X['DeviceInfo'].apply(lambda v: regex_replace(col_dict, str(v)))
     
     fillna_cols = ['card4', 'card5', 'card6',
                    'P_emaildomain', 'R_emaildomain', 'M4',
@@ -358,8 +395,8 @@ def build_model():
         ('column_selection', FunctionTransformer(col_DeviceType, validate=False)),
         onehot
     ])
-    pipe_DeviceInfo = Pipeline([
-        ('column_selection', FunctionTransformer(col_DeviceInfo, validate=False)),
+    pipe_DevicePlatform = Pipeline([
+        ('column_selection', FunctionTransformer(col_DevicePlatform, validate=False)),
         onehot
     ])
     pipe_id_12 = Pipeline([
@@ -410,44 +447,44 @@ def build_model():
     pipe = Pipeline([
         ('union', FeatureUnion([
             ('pipe_TransactionAmt', pipe_TransactionAmt),
-            # ('pipe_V1', pipe_V1),
-            # ('pipe_V1NaN', pipe_V1NaN),
+            ('pipe_V1', pipe_V1),
+            ('pipe_V1NaN', pipe_V1NaN),
             ('pipe_V2', pipe_V2),
             ('pipe_V2NaN', pipe_V2NaN),
             ('pipe_V3', pipe_V3),
             ('pipe_V3NaN', pipe_V3NaN),
-            # ('pipe_V4', pipe_V4),
-            # ('pipe_V4NaN', pipe_V4NaN),
+            ('pipe_V4', pipe_V4),
+            ('pipe_V4NaN', pipe_V4NaN),
             ('pipe_V5', pipe_V5),
-            # ('pipe_V5NaN', pipe_V5NaN),
-            # ('pipe_V6', pipe_V6),
-            # ('pipe_V6NaN', pipe_V6NaN),
-            # ('pipe_V7', pipe_V7),
-            # ('pipe_V7NaN', pipe_V7NaN),
-            # ('pipe_V8', pipe_V8),
-            # ('pipe_V8NaN', pipe_V8NaN),
-            # ('pipe_V9', pipe_V9),
-            # ('pipe_V9NaN', pipe_V9NaN),
-            # ('pipe_V10', pipe_V10),
-            # ('pipe_V10NaN', pipe_V10NaN),
-            # ('pipe_V11', pipe_V11),
-            # ('pipe_V11NaN', pipe_V11NaN),
-            # ('pipe_V12', pipe_V12),
-            # ('pipe_V12NaN', pipe_V12NaN),
-            # ('pipe_V13', pipe_V13),
-            # ('pipe_V13NaN', pipe_V13NaN),
-            # ('pipe_V14', pipe_V14),
-            # ('pipe_V14NaN', pipe_V14NaN),
-            # ('pipe_V15', pipe_V15),
-            # ('pipe_V15NaN', pipe_V15NaN),
-            # ('pipe_V16', pipe_V16),
-            # ('pipe_V16NaN', pipe_V16NaN),
-            # ('pipe_V17', pipe_V17),
-            # ('pipe_V17NaN', pipe_V17NaN),
-            # ('pipe_V18', pipe_V18),
-            # ('pipe_V18NaN', pipe_V18NaN),
-            # ('pipe_V19', pipe_V19),
-            # ('pipe_V19NaN', pipe_V19NaN),
+            ('pipe_V5NaN', pipe_V5NaN),
+            ('pipe_V6', pipe_V6),
+            ('pipe_V6NaN', pipe_V6NaN),
+            ('pipe_V7', pipe_V7),
+            ('pipe_V7NaN', pipe_V7NaN),
+            ('pipe_V8', pipe_V8),
+            ('pipe_V8NaN', pipe_V8NaN),
+            ('pipe_V9', pipe_V9),
+            ('pipe_V9NaN', pipe_V9NaN),
+            ('pipe_V10', pipe_V10),
+            ('pipe_V10NaN', pipe_V10NaN),
+            ('pipe_V11', pipe_V11),
+            ('pipe_V11NaN', pipe_V11NaN),
+            ('pipe_V12', pipe_V12),
+            ('pipe_V12NaN', pipe_V12NaN),
+            ('pipe_V13', pipe_V13),
+            ('pipe_V13NaN', pipe_V13NaN),
+            ('pipe_V14', pipe_V14),
+            ('pipe_V14NaN', pipe_V14NaN),
+            ('pipe_V15', pipe_V15),
+            ('pipe_V15NaN', pipe_V15NaN),
+            ('pipe_V16', pipe_V16),
+            ('pipe_V16NaN', pipe_V16NaN),
+            ('pipe_V17', pipe_V17),
+            ('pipe_V17NaN', pipe_V17NaN),
+            ('pipe_V18', pipe_V18),
+            ('pipe_V18NaN', pipe_V18NaN),
+            ('pipe_V19', pipe_V19),
+            ('pipe_V19NaN', pipe_V19NaN),
             ('pipe_dist1', pipe_dist1),
             ('pipe_dist1NaN', pipe_dist1NaN),
             ('pipe_dist2', pipe_dist2),
@@ -462,7 +499,7 @@ def build_model():
             ('pipe_R_emaildomain', pipe_R_emaildomain),
             ('pipe_M4', pipe_M4),
             ('pipe_DeviceType', pipe_DeviceType),
-            # ('pipe_DeviceInfo', pipe_DeviceInfo),
+            ('pipe_DevicePlatform', pipe_DevicePlatform),
             ('pipe_id_12', pipe_id_12),
             ('pipe_id_15', pipe_id_15),
             ('pipe_id_16', pipe_id_16),
@@ -485,7 +522,7 @@ def build_model():
         {
             'clf': [RandomForestClassifier()],
             'clf__n_estimators': [10],
-            'clf__criterion': 'entropy', # ['gini', 'entropy'],
+            'clf__criterion': ['entropy'], # ['gini', 'entropy'],
             'clf__min_samples_split': [10], # [10,20,50,100],
             'clf__min_samples_leaf': [1], # [1,2,5,10],
             'clf__min_weight_fraction_leaf': [0], # [0, 0.01, 0.1, 0.5],
@@ -571,7 +608,7 @@ def main(database_filepath='../data/train_transactions.db',
            'V22', 'V23', 'V24', 'V25', 'V26', 'V27', 'V28', 'V29', 'V30', 'V31',
            'V32', 'V33', 'V34', 'V35', 'V36', 'V37', 'V38', 'V39', 'V40', 'V41',
            'V42', 'V43', 'V44', 'V45', 'V46',
-           'DeviceType', 'DeviceInfo',
+           'DeviceType', 'DevicePlatform',
            'id_12', 'id_15', 'id_16', 'id_23', 'id_27', 'id_28', 'id_29', 'id_34',
            'weeks', 'months', 'hourofday', 'dayofweek', 'dayofmonth'
         ]
