@@ -204,6 +204,8 @@ def build_model():
     """
     
     onehot = ('onehot_encoder', OneHotEncoder(categories='auto', sparse=False, handle_unknown='ignore'))
+    imputer_most_frequent = ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+    imputer_constant = ('imputer', SimpleImputer(missing_values='NaN', strategy='constant', fill_value=0))
 
     # Set up the pipeline
 
@@ -213,133 +215,133 @@ def build_model():
     ])
     pipe_V1 = Pipeline([
         ('column_selection', FunctionTransformer(col_V1, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V1NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V1NaN, validate=False))
     ])
     pipe_V2 = Pipeline([
         ('column_selection', FunctionTransformer(col_V2, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V2NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V2NaN, validate=False))
     ])
     pipe_V3 = Pipeline([
         ('column_selection', FunctionTransformer(col_V3, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V3NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V3NaN, validate=False))
     ])
     pipe_V4 = Pipeline([
         ('column_selection', FunctionTransformer(col_V4, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V4NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V4NaN, validate=False))
     ])
     pipe_V5 = Pipeline([
         ('column_selection', FunctionTransformer(col_V5, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V5NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V5NaN, validate=False))
     ])
     pipe_V6 = Pipeline([
         ('column_selection', FunctionTransformer(col_V6, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V6NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V6NaN, validate=False))
     ])
     pipe_V7 = Pipeline([
         ('column_selection', FunctionTransformer(col_V7, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V7NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V7NaN, validate=False))
     ])
     pipe_V8 = Pipeline([
         ('column_selection', FunctionTransformer(col_V8, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V8NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V8NaN, validate=False))
     ])
     pipe_V9 = Pipeline([
         ('column_selection', FunctionTransformer(col_V9, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V9NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V9NaN, validate=False))
     ])
     pipe_V10 = Pipeline([
         ('column_selection', FunctionTransformer(col_V10, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V10NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V10NaN, validate=False))
     ])
     pipe_V11 = Pipeline([
         ('column_selection', FunctionTransformer(col_V11, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V11NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V11NaN, validate=False))
     ])
     pipe_V12 = Pipeline([
         ('column_selection', FunctionTransformer(col_V12, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V12NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V12NaN, validate=False))
     ])
     pipe_V13 = Pipeline([
         ('column_selection', FunctionTransformer(col_V13, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V13NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V13NaN, validate=False))
     ])
     pipe_V14 = Pipeline([
         ('column_selection', FunctionTransformer(col_V14, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V14NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V14NaN, validate=False))
     ])
     pipe_V15 = Pipeline([
         ('column_selection', FunctionTransformer(col_V15, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V15NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V15NaN, validate=False))
     ])
     pipe_V16 = Pipeline([
         ('column_selection', FunctionTransformer(col_V16, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V16NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V16NaN, validate=False))
     ])
     pipe_V17 = Pipeline([
         ('column_selection', FunctionTransformer(col_V17, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V17NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V17NaN, validate=False))
     ])
     pipe_V18 = Pipeline([
         ('column_selection', FunctionTransformer(col_V18, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V18NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V18NaN, validate=False))
     ])
     pipe_V19 = Pipeline([
         ('column_selection', FunctionTransformer(col_V19, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='most_frequent'))
+        imputer_most_frequent
     ])
     pipe_V19NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_V19NaN, validate=False))
@@ -348,14 +350,14 @@ def build_model():
 
     pipe_dist1 = Pipeline([
         ('column_selection', FunctionTransformer(col_dist1, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='constant', fill_value=0))
+        imputer_constant
     ])
     pipe_dist1NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_dist1NaN, validate=False))
     ])
     pipe_dist2 = Pipeline([
         ('column_selection', FunctionTransformer(col_dist2, validate=False)),
-        ('imputer', SimpleImputer(missing_values='NaN', strategy='constant', fill_value=0))
+        imputer_constant
     ])
     pipe_dist2NaN = Pipeline([
         ('column_selection', FunctionTransformer(col_dist2NaN, validate=False))
@@ -369,10 +371,6 @@ def build_model():
     ])
     pipe_card4 = Pipeline([
         ('column_selection', FunctionTransformer(col_card4, validate=False)),
-        onehot
-    ])
-    pipe_card5 = Pipeline([
-        ('column_selection', FunctionTransformer(col_card5, validate=False)),
         onehot
     ])
     pipe_card6 = Pipeline([
@@ -425,10 +423,6 @@ def build_model():
     ])
     pipe_id_29 = Pipeline([
         ('column_selection', FunctionTransformer(col_id_29, validate=False)),
-        onehot
-    ])
-    pipe_id_34 = Pipeline([
-        ('column_selection', FunctionTransformer(col_id_34, validate=False)),
         onehot
     ])
     pipe_hourofday = Pipeline([
@@ -493,7 +487,6 @@ def build_model():
             
             ('pipe_ProductCD', pipe_ProductCD),
             ('pipe_card4', pipe_card4),
-            # ('pipe_card5', pipe_card5),
             ('pipe_card6', pipe_card6),
             ('pipe_P_emaildomain', pipe_P_emaildomain),
             ('pipe_R_emaildomain', pipe_R_emaildomain),
@@ -507,13 +500,11 @@ def build_model():
             ('pipe_id_27', pipe_id_27),
             ('pipe_id_28', pipe_id_28),
             ('pipe_id_29', pipe_id_29),
-            # ('pipe_id_34', pipe_id_34),
 
             ('pipe_hourofday', pipe_hourofday),
             ('pipe_dayofweek', pipe_dayofweek),
             ('pipe_dayofmonth', pipe_dayofmonth)
         ])),
-        # ('feature_selection', SelectFromModel(RandomForestClassifier(n_estimators=10))),
         ('clf', RandomForestClassifier())
     ])
 
@@ -529,13 +520,11 @@ def build_model():
             'clf__max_features': [None], # ['auto', 'sqrt', 'log2', None],
             'clf__bootstrap': [True], # [True, False],
             'clf__oob_score': [False], # [False, True],
-            # 'clf__random_state': [0],
-            # 'clf__ccp_alpha': [0.0, 0.05, 0.10, 0.5, 1.0]
         }
     ]
 
     return GridSearchCV(
-        pipe, param_grid=pg, cv=10
+        pipe, param_grid=pg, cv=10, scoring='roc_auc'
     )
 
 
@@ -553,8 +542,8 @@ def evaluate_model(model, X_test, y_test):
     # Print the accuracy score
     print('Accuracy: {}\nPrecision: {}\nRecall: {}\n==============\n'.format(
         metrics.accuracy_score(y_test, y_pred),
-        metrics.precision_score(y_test, y_pred, average='micro'),
-        metrics.recall_score(y_test, y_pred, average='micro')
+        metrics.precision_score(y_test, y_pred),
+        metrics.recall_score(y_test, y_pred)
     ))
     print(metrics.classification_report(y_test, y_pred))
     print(metrics.confusion_matrix(y_test, y_pred))
@@ -613,8 +602,6 @@ def main(database_filepath='../data/train_transactions.db',
            'weeks', 'months', 'hourofday', 'dayofweek', 'dayofmonth'
         ]
     )
-
-    print(X.shape)
 
     print('Creating train test split from data...')
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
