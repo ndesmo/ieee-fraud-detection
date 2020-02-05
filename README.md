@@ -5,6 +5,13 @@ In this project I am attempting to correctly classify fraudulent online e-commer
 
 In order to run the code, you must first download the input files from Kaggle. You can then refer to these from the command line when running either `process_data.py`, `train_classifier.py` or `run_model.py`
 
+
+## Summary of analysis
+
+Please see [Capstone Project.ipynb](https://github.com/ndesmo/ieee-fraud-detection/blob/master/libs/ieee_fraud_detection/notebooks/Capstone%20Project.ipynb) for a full detailed write up about the project.
+
+In summary, I learned a great deal about data science pipelines in this project, and was able to achieve an AUC score of 0.86338 on the training dataset. Excited about my result, I ran the model on the training data and submitted my results to Kaggle where I only received a score of 0.750277. I have discussed potential avenues for improvement.
+
 ## Libraries required
 
 It is recommended to use Anaconda, so that the following libraries will be simple to install or already installed:
