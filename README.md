@@ -6,6 +6,13 @@ In this project I am attempting to correctly classify fraudulent online e-commer
 In order to run the code, you must first download the input files from Kaggle. You can then refer to these from the command line when running either `process_data.py`, `train_classifier.py` or `run_model.py`
 
 
+## Files to use
+
+* `process_data.py` - Apply initial processing to the transaction and identity datasets and save results to a `sqlalchemy` database
+* `train_classifier.py` - Train the model on the database file and save the model to a local pickle file
+* `run_model.py` - Run the saved model on the raw CSV input for the transaction and identity datasets and output a Kaggle submission CSV.
+
+
 ## Summary of analysis
 
 Please see [Capstone Project.ipynb](https://github.com/ndesmo/ieee-fraud-detection/blob/master/libs/ieee_fraud_detection/notebooks/Capstone%20Project.ipynb) for a full detailed write up about the project.
